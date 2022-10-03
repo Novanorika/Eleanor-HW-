@@ -9,22 +9,63 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+# Exercise 1 
+```{r}
+library(ggplot2)
+library(tidyverse)
+data('mpg')
+hist(mpg$hwy,main='Highway miles per gallon',xlab='Hmy')
+```
+# Most of the vehicles have the miles per gallon of 25-30 (around 80) on highway, secondly 15-20 mpg (70+) and thirdly 20-25 mpg (around 40). Fewer vehicles have the miles per gallon exceed 30 (20+) or less than 15 (less than 20).
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+# Exercise 2
+```{r}
+plot2 <- ggplot(mpg,aes(hwy,cty)) + 
+  geom_point(color = 'red',size = 2)
+print(plot2)
+```
+# There is a linear relation between hwy and cty that cty increases as hwy increases. It means that in this dataset, if miles per gallon is high on highway, it is likely to be be high in city as well and vice versa.
 
-```{r cars}
-summary(cars)
+
+# Exercise 3 
+```{r}
+library(ggplot2)
+ggplot(mpg,aes(y=forcats::fct_infreq(manufacturer)))+geom_bar()
+```
+# From the plot we can see that dodge produces the most cars and lincoln produced the least.
+
+
+# Exercise 4
+```{r}
+boxplot(hwy ~ cyl,data=mpg)
+```
+# The pattern follows that as cyl increases, hwy decreases.
+
+
+# Exercise 5 
+```{r}
+library(corrplot)
+M = ggplot2::mpg %>% select_if(is.numeric) %>% cor(.)
+corrplot(M,method='number', order='alphabet', type = 'lower')
+```
+# The displ and cyl or year; hwy and cty; year and cyl are positively related. The displ or cyl and cty; hwy and cyl or displ are negatively related. It is suprised that the year and the hwy has zero relation. Other relations make sense according to the ealier plot we make based on hwy and cty.
+
+# Exercise 6
+```{r}
+library(ggthemes)
+ggplot(mpg,aes(hwy,class))+
+  geom_boxplot(color='black')+geom_point(position='jitter',color = 'grey')+theme_bw()+
+  labs(x = 'Highway MPG', y = 'Vehicle Class')
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+# Exercise 7
+```{r}
+ggplot(mpg,aes(x=class,y=hwy,fill=factor(drv)))+geom_boxplot()
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# Exercise 8
+```{r}
+library(ggthemes)
+ggplot(mpg,aes(x=displ,y=hwy))+geom_point(aes(color=drv))+geom_smooth(formula = y~x, method = 'loess', aes(linetype = drv), se = FALSE)
+```
